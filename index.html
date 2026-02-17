@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Cardápio | #CarnavalDaDébora</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #1a237e;
+      --purple:  #6a1b9a;
+      --violet:  #7c2fbf;
+      --magenta: #e91e8c;
+      --yellow:  #ffc107;
+      --orange:  #ff6f00;
+      --cyan:    #00bcd4;
+      --teal:    #00897b;
+      --white:   #ffffff;
+      --cream:   #fdf8f0;
+      --card-bg: rgba(255,255,255,0.92);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ── Confetti Background ──────────────────────────────────── */
+    .confetti-field {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .confetti-field span {
+      position: absolute;
+      top: -20px;
+      border-radius: 2px;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(-20px) rotate(0deg);   opacity: 0.9; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── Organic SVG Blobs (top) ─────────────────────────────── */
+    .blob-top {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .blob-top svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* ── Page Wrapper ────────────────────────────────────────── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ──────────────────────────────────────────────── */
+    header {
+      position: relative;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--purple) 100%);
+      overflow: hidden;
+      padding-bottom: 32px;
+    }
+
+    .header-art {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Sun rays top-left */
+    .sun {
+      position: absolute;
+      top: -30px; left: -30px;
+      width: 130px; height: 130px;
+    }
+
+    .sun circle { fill: var(--yellow); }
+    .sun path  { fill: var(--orange); }
+
+    /* Carnival mask top-right */
+    .mask-wrap {
+      position: absolute;
+      top: 0; right: -10px;
+      width: 160px;
+    }
+
+    /* Dots scatter */
+    .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .header-inner {
+      position: relative;
+      z-index: 2;
+      padding: 28px 24px 8px;
+    }
+
+    .header-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 72px;
+      letter-spacing: 4px;
+      color: var(--white);
+      line-height: 1;
+      text-shadow: 4px 4px 0px var(--violet),
+                   6px 6px 0px rgba(0,0,0,0.2);
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    /* Wave divider */
+    .wave-divider {
+      display: block;
+      width: 100%;
+      margin-top: -2px;
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────────────────── */
+    main {
+      padding: 8px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── SECTION ─────────────────────────────────────────────── */
+    .section {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(26,35,126,0.10),
+                  0 1px 4px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .section:active {
+      transform: scale(0.985);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+      background: linear-gradient(120deg, #fff 0%, transparent 60%);
+    }
+
+    /* Colour variants per section */
+    .sec-classic   .section-header { background: linear-gradient(135deg, #1a237e, #283593); }
+    .sec-caipirinha .section-header { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+    .sec-energy    .section-header { background: linear-gradient(135deg, #00695c, #00897b); }
+
+    .section-icon {
+      font-size: 28px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 26px;
+      letter-spacing: 1.5px;
+      color: var(--white);
+      line-height: 1.1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-title small {
+      display: block;
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-top: 2px;
+    }
+
+    /* ── DRINK ITEMS ─────────────────────────────────────────── */
+    .drink-list {
+      padding: 8px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .drink-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .drink-item:hover,
+    .drink-item:focus-visible {
+      background: rgba(26,35,126,0.06);
+      transform: translateX(4px);
+    }
+
+    .drink-item:active {
+      background: rgba(26,35,126,0.12);
+      transform: scale(0.97) translateX(4px);
+    }
+
+    .sec-caipirinha .drink-item:hover  { background: rgba(106,27,154,0.07); }
+    .sec-caipirinha .drink-item:active { background: rgba(106,27,154,0.14); }
+    .sec-energy     .drink-item:hover  { background: rgba(0,105,92,0.07); }
+    .sec-energy     .drink-item:active { background: rgba(0,105,92,0.14); }
+
+    .drink-bullet {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .sec-classic    .drink-bullet { background: var(--navy); }
+    .sec-caipirinha .drink-bullet { background: var(--purple); }
+    .sec-energy     .drink-bullet { background: var(--teal); }
+
+    .drink-info {}
+
+    .drink-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1a1a2e;
+      line-height: 1.2;
+    }
+
+    .drink-desc {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: #555;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* Subtle separator between items */
+    .drink-item + .drink-item {
+      border-top: 1px solid rgba(0,0,0,0.04);
+    }
+
+    /* ── CAIPIRINHA FRUITS ───────────────────────────────────── */
+    .fruits-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #6a1b9a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 12px 20px 8px;
+    }
+
+    .fruit-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 20px 16px;
+    }
+
+    .fruit-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #f3e5f5, #ede7f6);
+      border: 1.5px solid #ce93d8;
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #6a1b9a;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .fruit-chip:hover,
+    .fruit-chip.active {
+      background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+      border-color: #6a1b9a;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(106,27,154,0.35);
+    }
+
+    .fruit-chip:active { transform: translateY(0) scale(0.96); }
+
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      position: relative;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .footer-wave {
+      display: block;
+      width: 100%;
+    }
+
+    .footer-inner {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--purple) 100%);
+      padding: 20px 24px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-dots {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hashtag {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 32px;
+      letter-spacing: 3px;
+      color: var(--yellow);
+      text-shadow: 2px 2px 0 var(--orange);
+      position: relative;
+      z-index: 1;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.04); }
+    }
+
+    .footer-tagline {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Ripple effect ───────────────────────────────────────── */
+    .ripple-host { position: relative; overflow: hidden; }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple-anim 0.55s linear;
+      pointer-events: none;
+      background: rgba(255,255,255,0.35);
+    }
+
+    @keyframes ripple-anim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ── Toast notification ──────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(26,35,126,0.95);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 100px;
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s;
+      opacity: 0;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ── Scroll-in animations ────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Confetti Field ──────────────────────────────────────────── -->
+<div class="confetti-field" id="confettiField" aria-hidden="true"></div>
+
+<!-- ─── Toast ─────────────────────────────────────────────────── -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="page">
+
+  <!-- ─── HEADER ──────────────────────────────────────────────── -->
+  <header>
+    <!-- Sun top-left -->
+    <svg class="sun" viewBox="0 0 130 130" fill="none" aria-hidden="true">
+      <!-- Rays -->
+      <path d="M0 0 L55 40 L40 55 Z" fill="#ff6f00" opacity="0.9"/>
+      <path d="M0 0 L70 20 L60 45 Z" fill="#ffc107" opacity="0.8"/>
+      <path d="M0 20 L50 60 L30 65 Z" fill="#ff8f00" opacity="0.7"/>
+      <path d="M20 0 L65 35 L55 55 Z" fill="#ffca28" opacity="0.85"/>
+      <circle cx="18" cy="18" r="32" fill="#ffc107"/>
+      <circle cx="18" cy="18" r="22" fill="#ffde03"/>
+    </svg>
+
+    <!-- Mask top-right -->
+    <svg class="mask-wrap" viewBox="0 0 160 120" fill="none" aria-hidden="true">
+      <!-- Left side mask -->
+      <ellipse cx="60" cy="60" rx="58" ry="52" fill="#ffc107"/>
+      <ellipse cx="60" cy="60" rx="58" ry="52" fill="url(#maskGradL)"/>
+      <!-- Eye hole -->
+      <ellipse cx="40" cy="52" rx="18" ry="14" fill="white" opacity="0.9"/>
+      <ellipse cx="40" cy="52" rx="13" ry="10" fill="#e0f7fa"/>
+      <!-- Right side mask -->
+      <ellipse cx="110" cy="55" rx="52" ry="46" fill="#e91e8c"/>
+      <ellipse cx="110" cy="55" rx="52" ry="46" fill="url(#maskGradR)"/>
+      <!-- Eye hole right -->
+      <ellipse cx="120" cy="48" rx="17" ry="13" fill="white" opacity="0.9"/>
+      <ellipse cx="120" cy="48" rx="12" ry="9" fill="#f3e5f5"/>
+      <!-- Decorative dots -->
+      <circle cx="30" cy="75" r="4" fill="#00bcd4"/>
+      <circle cx="90" cy="30" r="5" fill="#00bcd4"/>
+      <circle cx="140" cy="70" r="3.5" fill="#00bcd4"/>
+      <circle cx="60" cy="30" r="3" fill="white" opacity="0.8"/>
+      <!-- Feathers hint -->
+      <path d="M140 20 Q160 0 165 30 Q145 25 140 20Z" fill="#ff6f00"/>
+      <path d="M148 15 Q172 -5 175 28 Q152 20 148 15Z" fill="#ffc107"/>
+      <path d="M155 22 Q178 5 180 35 Q158 28 155 22Z" fill="#e91e8c"/>
+      <defs>
+        <linearGradient id="maskGradL" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffe082" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#ff8f00" stop-opacity="0.1"/>
+        </linearGradient>
+        <linearGradient id="maskGradR" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f48fb1" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#880e4f" stop-opacity="0.1"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- Scattered dots -->
+    <div style="position:absolute;top:14px;left:50%;width:10px;height:10px;background:#00bcd4;border-radius:50%;z-index:1;" aria-hidden="true"></div>
+    <div style="position:absolute;top:40px;right:52px;width:8px;height:8px;background:#e91e8c;border-radius:50%;z-index:1;" aria-hidden="true"></div>
+    <div style="position:absolute;bottom:30px;left:54%;width:12px;height:12px;background:#6a1b9a;border-radius:50%;z-index:1;" aria-hidden="true"></div>
+    <div style="position:absolute;bottom:18px;right:28%;width:7px;height:7px;background:#ffc107;border-radius:50%;z-index:1;" aria-hidden="true"></div>
+
+    <div class="header-inner">
+      <h1 class="header-title">CARDÁPIO</h1>
+      <p class="header-subtitle">🎭 Carnaval da Débora 🎭</p>
+    </div>
+
+    <!-- Wave bottom -->
+    <svg class="wave-divider" viewBox="0 0 480 48" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 0 Q60 48 120 24 Q180 0 240 28 Q300 56 360 24 Q420 0 480 32 L480 48 L0 48 Z"
+            fill="#fdf8f0"/>
+    </svg>
+  </header>
+
+  <!-- ─── MAIN ─────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- Section 1: Clássicos e Refrescantes -->
+    <div class="section sec-classic reveal" role="region" aria-labelledby="title-classic">
+      <div class="section-header">
+        <span class="section-icon" aria-hidden="true">🍊</span>
+        <div class="section-title" id="title-classic">
+          Clássicos e Refrescantes
+          <small>Drinks Tradicionais</small>
+        </div>
+      </div>
+      <div class="drink-list">
+
+        <div class="drink-item ripple-host" tabindex="0" role="button" aria-label="Aperol Spritz" data-toast="Boa escolha! 🍹 Aperol Spritz é o clássico!">
+          <span class="drink-bullet" aria-hidden="true"></span>
+          <div class="drink-info">
+            <div class="drink-name">Aperol Spritz</div>
+            <div class="drink-desc">Aperol, espumante e água gaseificada.</div>
+          </div>
+        </div>
+
+        <div class="drink-item ripple-host" tabindex="0" role="button" aria-label="Moscow Mule" data-toast="Moscow Mule! 🌶️ Refrescante e ardidinho!">
+          <span class="drink-bullet" aria-hidden="true"></span>
+          <div class="drink-info">
+            <div class="drink-name">Moscow Mule</div>
+            <div class="drink-desc">Vodka, limão, gengibre, açúcar e espuma gengibre.</div>
+          </div>
+        </div>
+
+        <div class="drink-item ripple-host" tabindex="0" role="button" aria-label="Negroni" data-toast="Negroni! 🍸 O sofisticado do Carnaval!">
+          <span class="drink-bullet" aria-hidden="true"></span>
+          <div class="drink-info">
+            <div class="drink-name">Negroni</div>
+            <div class="drink-desc">Gin, Vermute tinto e Campari.</div>
+          </div>
+        </div>
+
+        <div class="drink-item ripple-host" tabindex="0" role="button" aria-label="Campari" data-toast="Campari! 🍊 Simples e irresistível!">
+          <span class="drink-bullet" aria-hidden="true"></span>
+          <div class="drink-info">
+            <div class="drink-name">Campari</div>
+            <div class="drink-desc">Campari e Laranja.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section 2: Caipirinhas -->
+    <div class="section sec-caipirinha reveal" role="region" aria-labelledby="title-caipi">
+      <div class="section-header">
+        <span class="section-icon" aria-hidden="true">🍋</span>
+        <div class="section-title" id="title-caipi">
+          Caipirinhas
+          <small>Cachaça ou Vodka — escolha sua fruta!</small>
+        </div>
+      </div>
+
+      <p class="fruits-label">Escolha sua fruta favorita:</p>
+      <div class="fruit-chips" role="group" aria-label="Opções de frutas">
+        <button class="fruit-chip" data-toast="🍋 Limão! Um clássico que nunca sai de moda!">🍋 Limão</button>
+        <button class="fruit-chip" data-toast="🍓 Morango! Doce como o Carnaval!">🍓 Morango</button>
+        <button class="fruit-chip" data-toast="🥝 Kiwi! Diferente e delicioso!">🥝 Kiwi</button>
+        <button class="fruit-chip" data-toast="🌺 Maracujá! Tropical e refrescante!">🌺 Maracujá</button>
+        <button class="fruit-chip" data-toast="🍍 Abacaxi! Pura festa tropical!">🍍 Abacaxi</button>
+      </div>
+    </div>
+
+    <!-- Section 3: Energéticos -->
+    <div class="section sec-energy reveal" role="region" aria-labelledby="title-energy">
+      <div class="section-header">
+        <span class="section-icon" aria-hidden="true">⚡</span>
+        <div class="section-title" id="title-energy">
+          Energéticos
+          <small>Para aguentar até o amanhecer</small>
+        </div>
+      </div>
+      <div class="drink-list">
+
+        <div class="drink-item ripple-host" tabindex="0" role="button" aria-label="Gin e Energy" data-toast="Gin & Energy! ⚡ Energia para pular o Carnaval!">
+          <span class="drink-bullet" aria-hidden="true"></span>
+          <div class="drink-info">
+            <div class="drink-name">Gin &amp; Energy</div>
+            <div class="drink-desc">Gin combinado com energético.</div>
+          </div>
+        </div>
+
+        <div class="drink-item ripple-host" tabindex="0" role="button" aria-label="Vodka e Energy" data-toast="Vodka & Energy! 🚀 A combinação explosiva!">
+          <span class="drink-bullet" aria-hidden="true"></span>
+          <div class="drink-info">
+            <div class="drink-name">Vodka &amp; Energy</div>
+            <div class="drink-desc">Vodka combinada com energético.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ─── FOOTER ───────────────────────────────────────────────── -->
+  <footer>
+    <!-- Top wave into footer -->
+    <svg class="footer-wave" viewBox="0 0 480 40" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 40 Q60 0 120 20 Q180 40 240 10 Q300 -10 360 20 Q420 40 480 10 L480 40 Z"
+            fill="#1a237e"/>
+    </svg>
+    <div class="footer-inner">
+      <!-- Decorative dots inside footer -->
+      <div style="position:absolute;top:12px;left:16px;width:9px;height:9px;background:#6a1b9a;border-radius:50%;opacity:0.7" aria-hidden="true"></div>
+      <div style="position:absolute;top:28px;right:24px;width:12px;height:12px;background:#e91e8c;border-radius:50%;opacity:0.6" aria-hidden="true"></div>
+      <div style="position:absolute;bottom:20px;left:40%;width:8px;height:8px;background:#00bcd4;border-radius:50%;opacity:0.7" aria-hidden="true"></div>
+
+      <!-- Serpentine accent SVG -->
+      <svg style="position:absolute;top:10px;left:0;right:0;width:100%;opacity:0.15" height="28" viewBox="0 0 480 28" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 14 Q40 0 80 14 Q120 28 160 14 Q200 0 240 14 Q280 28 320 14 Q360 0 400 14 Q440 28 480 14"
+              stroke="#ffc107" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+
+      <p class="hashtag">#CARNAVALDADÉBORA</p>
+      <p class="footer-tagline">🎊 Bora arrasar na folia! 🎊</p>
+    </div>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+  /* ─── Confetti Generator ─────────────────────────────────── */
+  (function generateConfetti() {
+    const colors = ['#ffc107','#e91e8c','#6a1b9a','#00bcd4','#ff6f00','#1a237e','#ffffff','#ff5252'];
+    const shapes = ['rect','circle','ribbon'];
+    const field  = document.getElementById('confettiField');
+    const N      = 40;
+
+    for (let i = 0; i < N; i++) {
+      const el    = document.createElement('span');
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      const size  = Math.random() * 8 + 4;
+      const left  = Math.random() * 100;
+      const delay = Math.random() * 8;
+      const dur   = Math.random() * 6 + 5;
+
+      el.style.left            = left + '%';
+      el.style.width           = size + 'px';
+      el.style.height          = (shape === 'ribbon' ? size * 2.5 : size) + 'px';
+      el.style.background      = color;
+      el.style.borderRadius    = shape === 'circle' ? '50%' : shape === 'ribbon' ? '2px' : '1px';
+      el.style.animationDelay  = delay + 's';
+      el.style.animationDuration = dur + 's';
+      el.style.transform       = `rotate(${Math.random()*360}deg)`;
+      field.appendChild(el);
+    }
+  })();
+
+  /* ─── Ripple on tap ──────────────────────────────────────── */
+  document.querySelectorAll('.ripple-host').forEach(el => {
+    function createRipple(e) {
+      const rect   = el.getBoundingClientRect();
+      const x      = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const y      = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const size   = Math.max(rect.width, rect.height) * 1.4;
+      ripple.style.cssText = `width:${size}px;height:${size}px;left:${x-size/2}px;top:${y-size/2}px`;
+      el.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+    }
+    el.addEventListener('pointerdown', createRipple);
+  });
+
+  /* ─── Toast on click ─────────────────────────────────────── */
+  const toast = document.getElementById('toast');
+  let toastTimer;
+
+  function showToast(msg) {
+    clearTimeout(toastTimer);
+    toast.textContent = msg;
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // Drink items
+  document.querySelectorAll('[data-toast]').forEach(el => {
+    el.addEventListener('click', () => showToast(el.dataset.toast));
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') showToast(el.dataset.toast); });
+  });
+
+  // Fruit chips toggle
+  document.querySelectorAll('.fruit-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const wasActive = chip.classList.contains('active');
+      document.querySelectorAll('.fruit-chip').forEach(c => c.classList.remove('active'));
+      if (!wasActive) {
+        chip.classList.add('active');
+        showToast(chip.dataset.toast);
+      }
+    });
+  });
+
+  /* ─── Scroll reveal ──────────────────────────────────────── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
