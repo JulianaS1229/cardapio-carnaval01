@@ -6,7 +6,7 @@ Este é um projeto de **Cardápio Digital Interativo** desenvolvido sob medida p
 
 ## 🚀 Demonstração
 Você pode visualizar o projeto online aqui:
-> **🔗 [CLIQUE AQUI PARA ACESSAR O SITE](https://seu-link-aqui.vercel.app)**
+> **🔗 https://julianas1229.github.io/cardapio-carnaval01/**
 
 ---
 
